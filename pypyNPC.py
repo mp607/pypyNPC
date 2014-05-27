@@ -5,6 +5,28 @@ from datetime import datetime, timedelta
 from youtube_search import youtube_search
 from plurk_oauth.PlurkAPI import PlurkAPI
 
+def getPlurks(plurk, t = 3):
+    offset = datetime.utcnow() - timedelta(minutes=t)
+    offset = offset.strftime('%Y-%m-%dT%H:%M:%S')
+
+    return plurk.callAPI('/APP/Polling/getPlurks', {
+        'offset': offset,
+        })
+
+def npc(plurk):
+    # 記一下自己的plurk id
+    myID = str(plurk.callAPI('/APP/Users/me')['id'])
+
+    plurks = getPlurks(plurk, 3)
+
+    msgs = plurks['plurks']
+    plurk_users = plurks['plurk_users']
+
+    # plurk 處理
+    for msg in msgs:
+        if msg['content_raw'].find(u'想聽') == 0:
+            response(msg)
+
 def response(p):
     if p['response_count'] > 0:
         r = plurk.callAPI('/APP/Responses/get', {
@@ -45,19 +67,5 @@ if __name__ == "__main__":
     # 自動加入所有好友
     plurk.callAPI('/APP/Alerts/addAllAsFriends')
 
-    # 記一下自己的plurk id
-    myID = str(plurk.callAPI('/APP/Users/me')['id'])
-
-    # 取得三分鐘前的時間(utc)當參數
-    offset = datetime.utcnow() - timedelta(minutes=3)
-    offset = offset.strftime('%Y-%m-%dT%H:%M:%S')
-
-    # 取的最近三分鐘的噗
-    msgs = plurk.callAPI('/APP/Polling/getPlurks', {
-        'offset': offset,
-        })['plurks']
-
-    for msg in msgs:
-        if msg['content_raw'].find(u'想聽') == 0:
-            response(msg)
+    npc(plurk)
 
