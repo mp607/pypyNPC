@@ -64,8 +64,9 @@ if __name__ == "__main__":
     # 初始化
     plurk = PlurkAPI.fromfile('API.keys')
 
-    # 自動加入所有好友
-    plurk.callAPI('/APP/Alerts/addAllAsFriends')
-
-    npc(plurk)
+    if plurk:
+        # 自動加入所有好友
+        plurk.callAPI('/APP/Alerts/addAllAsFriends')
+        # Start NPC
+        npc(plurk)
 
