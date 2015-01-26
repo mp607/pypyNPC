@@ -14,9 +14,6 @@ def getPlurks(plurk, t = 3):
         })
 
 def npc(plurk):
-    # 記一下自己的plurk id
-    myID = str(plurk.callAPI('/APP/Users/me')['id'])
-
     plurks = getPlurks(plurk, 3)
 
     msgs = plurks['plurks']
@@ -28,6 +25,9 @@ def npc(plurk):
             response(msg)
 
 def response(p):
+    # 記一下自己的plurk id
+    myID = str(plurk.callAPI('/APP/Users/me')['id'])
+
     if p['response_count'] > 0:
         r = plurk.callAPI('/APP/Responses/get', {
             'plurk_id': p['plurk_id']
