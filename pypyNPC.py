@@ -22,9 +22,9 @@ def npc(plurk):
     # plurk 處理
     for msg in msgs:
         if msg['content_raw'].find(u'想聽') == 0:
-            response(msg)
+            findSongs(msg)
 
-def response(p):
+def findSongs(p):
     # 記一下自己的plurk id
     myID = str(plurk.callAPI('/APP/Users/me')['id'])
 
@@ -39,7 +39,7 @@ def response(p):
 
     # 歌曲名稱
     name = p['content_raw'][2:]
-    songs = findSong(name)
+    songs = youtube_search(name, 2)
     
     for song in songs:
         resp = u'為您帶來'
@@ -56,9 +56,6 @@ def response(p):
             'content': resp.encode('utf-8'),
             'qualifier': 'likes' 
             })
-
-def findSong(name):
-    return youtube_search(name, 2)
 
 if __name__ == "__main__":
     # 初始化
