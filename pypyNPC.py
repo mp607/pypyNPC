@@ -13,6 +13,19 @@ def getPlurks(plurk, t = 3):
         'offset': offset,
         })
 
+def hasResponsed(plurk, p):
+    # 記一下自己的plurk id
+    myID = str(plurk.callAPI('/APP/Users/me')['id'])
+
+    if p['response_count'] > 0:
+        r = plurk.callAPI('/APP/Responses/get', {
+            'plurk_id': p['plurk_id']
+            })
+        # 確認自己沒有回過這噗
+        for key in r['friends'].keys():
+            if key == myID:
+                return True
+
 def npc(plurk):
     plurks = getPlurks(plurk, 3)
 
@@ -21,6 +34,9 @@ def npc(plurk):
 
     # plurk 處理
     for msg in msgs:
+        if hasResponsed(plurk, msg):
+            continue
+
         if msg['content_raw'].find(u'想聽') == 0:
             findSongs(msg)
 
@@ -32,18 +48,6 @@ def npc(plurk):
                 })
 
 def findSongs(p):
-    # 記一下自己的plurk id
-    myID = str(plurk.callAPI('/APP/Users/me')['id'])
-
-    if p['response_count'] > 0:
-        r = plurk.callAPI('/APP/Responses/get', {
-            'plurk_id': p['plurk_id']
-            })
-        # 確認自己沒有回過這噗
-        for key in r['friends'].keys():
-            if key == myID:
-                return
-
     # 歌曲名稱
     name = p['content_raw'][2:]
     songs = youtube_search(name, 2)
