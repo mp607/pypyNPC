@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from youtube_search import youtube_search
 from plurk_oauth.PlurkAPI import PlurkAPI
 
-def getPlurks(plurk, t = 3):
+def getPlurks(t = 3):
     offset = datetime.utcnow() - timedelta(minutes=t)
     offset = offset.strftime('%Y-%m-%dT%H:%M:%S')
 
@@ -13,7 +13,7 @@ def getPlurks(plurk, t = 3):
         'offset': offset,
         })
 
-def hasResponsed(plurk, p):
+def hasResponsed(p):
     # 記一下自己的plurk id
     myID = str(plurk.callAPI('/APP/Users/me')['id'])
 
@@ -26,15 +26,15 @@ def hasResponsed(plurk, p):
             if key == myID:
                 return True
 
-def npc(plurk):
-    plurks = getPlurks(plurk, 3)
+def npc():
+    plurks = getPlurks(3)
 
     msgs = plurks['plurks']
     plurk_users = plurks['plurk_users']
 
     # plurk 處理
     for msg in msgs:
-        if hasResponsed(plurk, msg):
+        if hasResponsed(msg):
             continue
 
         if msg['content_raw'].find(u'想聽') == 0:
@@ -76,5 +76,5 @@ if __name__ == "__main__":
         # 自動加入所有好友
         plurk.callAPI('/APP/Alerts/addAllAsFriends')
         # Start NPC
-        npc(plurk)
+        npc()
 
