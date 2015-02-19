@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 Base = declarative_base()
-session = None
 
 class Songs(Base):
     __tablename__ = 'songs'
@@ -32,27 +31,36 @@ class Songs(Base):
         return "<Songs(user='%s',plurkid='%s',search='%s',v1='%s',v2='%s',dt='%s')>" % \
                 (self.user, self.plurkid, self.search, self.v1, self.v2, self.dt)
 
+class DB:
+    def __init__(self, dburl, echo = False):
+        engine = create_engine(dburl, echo = echo)
+        Base.metadata.create_all(engine)
 
-def insert_findSongs(user, plurkid, search, v1, v2):
-    session.add(Songs(user, plurkid, search, v1, v2))
-    session.commit()
+        Session = sessionmaker(bind = engine)
+        self._session = Session()
 
-def connect(echo = False):
-    engine = create_engine('sqlite:///db/pypyNPC.db')
-    engine.echo = echo
-    Base.metadata.create_all(engine)
+    def insert_findSongs(self, user, plurkid, search, v1, v2):
+        self.add(Songs(user, plurkid, search, v1, v2))
+        self.commit()
 
-    Session = sessionmaker(bind = engine)
-    global session
-    session = Session()
+    def add(self, data):
+        self._session.add(data)
+
+    def query(self, q):
+        return self._session.query(q)
+
+    def delete(self, data):
+        self._session.delete(data)
+
+    def commit(self):
+        self._session.commit()
 
 if __name__ =='__main__':
-    connect(True)
-    insert_findSongs(0,0,0,0,0)
+    db = DB(dburl = 'sqlite:///db/test.db', echo = True)
+    db.insert_findSongs(0,0,0,0,0)
 
-    for data in session.query(Songs).filter_by(user='0').all():
+    for data in db.query(Songs).filter_by(user='0').all():
         print data
-        session.delete(data)
-        session.commit()
+        db.delete(data)
+        db.commit()
 
-    session.close()

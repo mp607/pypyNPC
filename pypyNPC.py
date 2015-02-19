@@ -4,7 +4,7 @@
 from datetime import datetime, timedelta
 from youtube_search import youtube_search
 from plurk_oauth.PlurkAPI import PlurkAPI
-import db
+from db import DB
 
 def getPlurks(t = 3):
     offset = datetime.utcnow() - timedelta(minutes=t)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         myID = str(plurk.callAPI('/APP/Users/me')['id'])
 
         # Database
-        db.connect()
+        db = DB(dburl = 'sqlite:///db/pypyNPC.db')
 
         # Start NPC
         npc()
