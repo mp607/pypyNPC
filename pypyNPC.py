@@ -14,9 +14,6 @@ def getPlurks(t = 3):
         })
 
 def hasResponsed(p):
-    # 記一下自己的plurk id
-    myID = str(plurk.callAPI('/APP/Users/me')['id'])
-
     if p['response_count'] > 0:
         r = plurk.callAPI('/APP/Responses/get', {
             'plurk_id': p['plurk_id']
@@ -75,6 +72,10 @@ if __name__ == "__main__":
     if plurk:
         # 自動加入所有好友
         plurk.callAPI('/APP/Alerts/addAllAsFriends')
+
+        # 記一下自己的plurk id
+        myID = str(plurk.callAPI('/APP/Users/me')['id'])
+
         # Start NPC
         npc()
 
