@@ -4,6 +4,7 @@
 from datetime import datetime, timedelta
 from youtube_search import youtube_search
 from plurk_oauth.PlurkAPI import PlurkAPI
+import db
 
 def getPlurks(t = 3):
     offset = datetime.utcnow() - timedelta(minutes=t)
@@ -35,7 +36,9 @@ def npc():
             continue
 
         if msg['content_raw'].find(u'想聽') == 0:
-            findSongs(msg)
+            owner_id = str(msg['owner_id'])
+            user = plurk_users[owner_id]['nick_name']
+            findSongs(user, msg)
 
         elif msg['content_raw'].lower().find(u'@pypynpc') >=0:
             plurk.callAPI('/APP/Responses/responseAdd', {
@@ -44,9 +47,9 @@ def npc():
                 'qualifier': 'says'
                 })
 
-def findSongs(p):
+def findSongs(user, p):
     # 歌曲名稱
-    name = p['content_raw'][2:]
+    name = p['content_raw'][2:].lstrip()
     songs = youtube_search(name, 2)
     
     for song in songs:
@@ -65,6 +68,14 @@ def findSongs(p):
             'qualifier': 'likes' 
             })
 
+    db.insert_findSongs(
+        user,
+        p['plurk_id'],
+        name,
+        songs[0]['id'],
+        songs[1]['id']
+        )
+
 if __name__ == "__main__":
     # 初始化
     plurk = PlurkAPI.fromfile('API.keys')
@@ -75,6 +86,9 @@ if __name__ == "__main__":
 
         # 記一下自己的plurk id
         myID = str(plurk.callAPI('/APP/Users/me')['id'])
+
+        # Database
+        db.connect()
 
         # Start NPC
         npc()
