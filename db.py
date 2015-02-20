@@ -55,9 +55,9 @@ class DB:
     def commit(self):
         self._session.commit()
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     db = DB(dburl='sqlite:///db/test.db', echo=True)
-    db.insert_findSongs(0,0,0,0,0)
+    db.insert_findSongs(0, 0, 0, 0, 0)
 
     for data in db.query(Songs).filter_by(user='0').all():
         print data

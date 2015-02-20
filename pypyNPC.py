@@ -40,7 +40,7 @@ def npc():
             user = plurk_users[owner_id]['nick_name']
             findSongs(user, msg)
 
-        elif msg['content_raw'].lower().find(u'@pypynpc') >=0:
+        elif msg['content_raw'].lower().find(u'@pypynpc') >= 0:
             plurk.callAPI('/APP/Responses/responseAdd', {
                 'plurk_id': msg['plurk_id'],
                 'content': u'找我嗎？ (blush)'.encode('utf-8'),
