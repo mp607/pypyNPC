@@ -5,8 +5,6 @@ import json
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from oauth2client.tools import argparser
-
 
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # tab of
@@ -57,3 +55,10 @@ def youtube_search(name, max_results):
                 )
 
     return videos
+
+if __name__ == '__main__':
+    try:
+        result = youtube_search('Hello, World!', 2)
+        print result
+    except HttpError, e:
+         print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
