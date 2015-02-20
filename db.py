@@ -32,11 +32,11 @@ class Songs(Base):
                 (self.user, self.plurkid, self.search, self.v1, self.v2, self.dt)
 
 class DB:
-    def __init__(self, dburl, echo = False):
-        engine = create_engine(dburl, echo = echo)
+    def __init__(self, dburl, echo=False):
+        engine = create_engine(dburl, echo=echo)
         Base.metadata.create_all(engine)
 
-        Session = sessionmaker(bind = engine)
+        Session = sessionmaker(bind=engine)
         self._session = Session()
 
     def insert_findSongs(self, user, plurkid, search, v1, v2):
@@ -56,7 +56,7 @@ class DB:
         self._session.commit()
 
 if __name__ =='__main__':
-    db = DB(dburl = 'sqlite:///db/test.db', echo = True)
+    db = DB(dburl='sqlite:///db/test.db', echo=True)
     db.insert_findSongs(0,0,0,0,0)
 
     for data in db.query(Songs).filter_by(user='0').all():
