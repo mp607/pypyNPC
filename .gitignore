@@ -1,3 +1,4 @@
 API.keys
 *.pyc
 db/*.db
+pypyNPC.log

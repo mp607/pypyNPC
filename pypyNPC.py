@@ -2,6 +2,9 @@
 # -*- coding:utf-8 -*-
 
 from datetime import datetime, timedelta
+import traceback
+import httplib2
+import googleapiclient
 from youtube_search import youtube_search
 from plurk_oauth.PlurkAPI import PlurkAPI
 from db import DB
@@ -77,19 +80,40 @@ def findSongs(user, p):
         )
 
 if __name__ == "__main__":
-    # 初始化
-    plurk = PlurkAPI.fromfile('API.keys')
+    errmsg = ""
+    try:
+        plurk = PlurkAPI.fromfile('API.keys')
 
-    if plurk:
-        # 自動加入所有好友
-        plurk.callAPI('/APP/Alerts/addAllAsFriends')
+        if plurk:
+            # 自動加入所有好友
+            plurk.callAPI('/APP/Alerts/addAllAsFriends')
 
-        # 記一下自己的plurk id
-        myID = str(plurk.callAPI('/APP/Users/me')['id'])
+            # 記一下自己的plurk id
+            myID = str(plurk.callAPI('/APP/Users/me')['id'])
 
-        # Database
-        db = DB(dburl='sqlite:///db/pypyNPC.db')
+            # Database
+            db = DB(dburl='sqlite:///db/pypyNPC.db')
 
-        # Start NPC
-        npc()
+            # Start NPC
+            npc()
+
+    except httplib2.ServerNotFoundError as e:
+        errmsg = "Server Not Found Error: %s" % e
+
+    except googleapiclient.errors.HttpError as e:
+        errmsg = "[youtube_search] An HTTP error %d occurred:\n%s" % \
+                (e.resp.status, e.content)
+
+    except Exception as e:
+        errmsg = traceback.format_exc()
+
+    finally:
+        if errmsg:
+            offset = datetime.now()
+            offset = offset.strftime('%Y-%m-%d %H:%M:%S')
+            with open('pypyNPC.log','a+') as f:
+                f.write(offset)
+                f.write(' ')
+                f.write(errmsg)
+                f.write('\n')
 
