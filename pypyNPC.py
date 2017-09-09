@@ -6,7 +6,7 @@ import traceback
 import httplib2
 import googleapiclient
 from youtube_search import youtube_search
-from plurk_oauth.PlurkAPI import PlurkAPI
+from plurk_oauth import PlurkAPI
 from db import DB
 
 def getPlurks(t=3):
