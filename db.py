@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
 from sqlalchemy import create_engine
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     db.insert_findSongs(0, 0, 0, 0, 0)
 
     for data in db.query(Songs).filter_by(user='0').all():
-        print data
+        print(data)
         db.delete(data)
         db.commit()
 

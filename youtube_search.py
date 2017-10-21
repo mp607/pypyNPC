@@ -15,15 +15,15 @@ def youtube_search(name, max_results):
     try: 
         file = open('API.keys', 'r+')
     except IOError:
-        print "You need to put keys in API.keys"
+        print("You need to put keys in API.keys")
         raise
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        print("Unexpected error:", sys.exc_info()[0])
     else:
         data = json.load(file)
         file.close()
         if not data['GOOGLE_DEVELOPER_KEY']:
-            print "You need to put keys in API.keys"
+            print("You need to put keys in API.keys")
         else:
             DEVELOPER_KEY = data['GOOGLE_DEVELOPER_KEY']
 
@@ -59,6 +59,6 @@ def youtube_search(name, max_results):
 if __name__ == '__main__':
     try:
         result = youtube_search('Hello, World!', 2)
-        print result
-    except HttpError, e:
-         print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
+        print(result)
+    except(HttpError, e):
+         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

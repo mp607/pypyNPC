@@ -14,9 +14,9 @@
 	$ cp API.keys.example API.keys
 	Then put your own API keys info API.keys
 
-	$ pip install plurk-oauth
-	$ pip install google-api-python-client
-	$ pip install sqlalchemy
+	$ pip3 install plurk-oauth
+	$ pip3 install google-api-python-client
+	$ pip3 install sqlalchemy
 
 
 ##Running:
